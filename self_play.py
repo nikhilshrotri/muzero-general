@@ -27,6 +27,8 @@ class SelfPlay:
         self.model.set_weights(initial_checkpoint["weights"])
         self.model.to(torch.device("cuda" if self.config.selfplay_on_gpu else "cpu"))
         self.model.eval()
+        
+        self.game_number = 0
 
     def continuous_self_play(self, shared_storage, replay_buffer, test_mode=False):
         while ray.get(
@@ -180,6 +182,8 @@ class SelfPlay:
                 game_history.reward_history.append(reward)
                 game_history.to_play_history.append(self.game.to_play())
 
+        self.game_number += 1
+        print('Done with game {}'.format(self.game_number))
         return game_history
 
     def close_game(self):
