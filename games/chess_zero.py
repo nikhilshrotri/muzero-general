@@ -189,7 +189,6 @@ class Game(AbstractGame):
         # input("Press enter to take a step ")
 
     def human_to_action(self):
-        pass
         """
         For multiplayer games, ask the user for a legal action
         and return the corresponding action number.
@@ -222,6 +221,7 @@ class Game(AbstractGame):
         #         pass
         #     print("Wrong input, try again")
         # return choice
+        return self.env.human_to_action()
 
     def expert_agent(self):
         pass
@@ -323,6 +323,16 @@ class Chess_zero:
         if self.board.is_fivefold_repetition() or self.board.is_seventyfive_moves():
             return True
         return False
+    
+    def human_to_action(self):
+        while True:
+            ip_move = input('Enter a legal move')
+            try:
+                parsed_move  = self.board.parse_san(ip_move)
+            except ValueError:
+                print('Illegal Move!)
+        
+        return self.env1.encode(ip_move)
 
     # def expert_action(self):
     #     board = self.board
