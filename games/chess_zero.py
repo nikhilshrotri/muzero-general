@@ -81,7 +81,7 @@ class MuZeroConfig:
         ### Training
         self.results_path = pathlib.Path(__file__).resolve().parents[1] / "results" / pathlib.Path(__file__).stem / datetime.datetime.now().strftime("%Y-%m-%d--%H-%M-%S")  # Path to store the model weights and TensorBoard logs
         self.save_model = True  # Save the checkpoint in results_path as model.checkpoint
-        self.training_steps = 1000000  # Total number of training steps (ie weights update according to a batch)
+        self.training_steps = 10  # Total number of training steps (ie weights update according to a batch)
         self.batch_size = 64  # Number of parts of games to train on at each training step
         self.checkpoint_interval = 10  # Number of training steps before using the model for self-playing
         self.value_loss_weight = 0.25  # Scale the value loss to avoid overfitting of the value function, paper recommends 0.25 (See paper appendix Reanalyze)
@@ -329,10 +329,11 @@ class Chess_zero:
             ip_move = input('Enter a legal move')
             try:
                 parsed_move  = self.board.parse_san(ip_move)
+                break
             except ValueError:
-                print('Illegal Move!)
+                print('Illegal Move!')
         
-        return self.env1.encode(ip_move)
+        return self.env1.encode(parsed_move)
 
     # def expert_action(self):
     #     board = self.board
