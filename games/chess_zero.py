@@ -245,6 +245,10 @@ class Game(AbstractGame):
             String representing the action.
         """
         return self.env.action_to_string(action_number)
+    
+    def get_action_dict(self):
+        
+        return self.env.get_action_dict()
 
 
 class Chess_zero:
@@ -382,6 +386,14 @@ class Chess_zero:
     
     def action_to_string(self,action_number):
         return self.env1.decode(action_number)
+    
+    def get_action_dict(self):
+        
+        ac_dict ={}
+        for ac in self.env1.legal_actions:
+            ac_dict[self.env1.decode(ac)] = ac
+        
+        return ac_dict
     
     def board_encode(self,board_fen):
         pawn = numpy.zeros((8,8))
