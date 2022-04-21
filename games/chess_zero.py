@@ -38,13 +38,13 @@ class MuZeroConfig:
         ### Self-Play
         self.num_workers = 1  # Number of simultaneous threads/workers self-playing to feed the replay buffer
         self.selfplay_on_gpu = False
-        self.max_moves = 75  # Maximum number of moves if game is not finished before
-        self.num_simulations = 25  # Number of future moves self-simulated
-        self.discount = 1  # Chronological discount of the reward
+        self.max_moves = 50  # Maximum number of moves if game is not finished before
+        self.num_simulations = 15  # Number of future moves self-simulated
+        self.discount = 0.97  # Chronological discount of the reward
         self.temperature_threshold = None  # Number of moves before dropping the temperature given by visit_softmax_temperature_fn to 0 (ie selecting the best action). If None, visit_softmax_temperature_fn is used every time
 
         # Root prior exploration noise
-        self.root_dirichlet_alpha = 0.1
+        self.root_dirichlet_alpha = 0.3
         self.root_exploration_fraction = 0.25
 
         # UCB formula
@@ -234,17 +234,17 @@ class Game(AbstractGame):
         """
         return self.env.expert_action()
 
-    # def action_to_string(self, action_number):
-    #     """
-    #     Convert an action number to a string representing the action.
+    def action_to_string(self, action_number):
+        """
+        Convert an action number to a string representing the action.
 
-    #     Args:
-    #         action_number: an integer from the action space.
+        Args:
+            action_number: an integer from the action space.
 
-    #     Returns:
-    #         String representing the action.
-    #     """
-    #     return self.env1.decode(action_number)
+        Returns:
+            String representing the action.
+        """
+        return self.env.action_to_string(action_number)
 
 
 class Chess_zero:
@@ -379,6 +379,9 @@ class Chess_zero:
 
     def render(self):
         print(self.board)
+    
+    def action_to_string(self,action_number):
+        return self.env1.decode(action_number)
     
     def board_encode(self,board_fen):
         pawn = numpy.zeros((8,8))
