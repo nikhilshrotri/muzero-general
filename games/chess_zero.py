@@ -27,7 +27,7 @@ class MuZeroConfig:
         self.observation_shape = (7, 8, 8)  # Dimensions of the game observation, must be 3D (channel, height, width). For a 1D array, please reshape it to (1, 1, length of array)
         self.action_space = list(range(4672))  # Fixed list of all possible actions. You should only edit the length
         self.players = list(range(2))  # List of players. You should only edit the length
-        self.stacked_observations = 0  # Number of previous observations and previous actions to add to the current observation
+        self.stacked_observations = 10  # Number of previous observations and previous actions to add to the current observation
 
         # Evaluate
         self.muzero_player = 0  # Turn Muzero begins to play (0: MuZero plays first, 1: MuZero plays second)
@@ -40,8 +40,8 @@ class MuZeroConfig:
         self.selfplay_on_gpu = False
         self.max_moves = 50  # Maximum number of moves if game is not finished before
         self.num_simulations = 15  # Number of future moves self-simulated
-        self.discount = 0.97  # Chronological discount of the reward
-        self.temperature_threshold = None  # Number of moves before dropping the temperature given by visit_softmax_temperature_fn to 0 (ie selecting the best action). If None, visit_softmax_temperature_fn is used every time
+        self.discount = 0.9  # Chronological discount of the reward
+        self.temperature_threshold = 0  # Number of moves before dropping the temperature given by visit_softmax_temperature_fn to 0 (ie selecting the best action). If None, visit_softmax_temperature_fn is used every time
 
         # Root prior exploration noise
         self.root_dirichlet_alpha = 0.3
@@ -81,8 +81,8 @@ class MuZeroConfig:
         ### Training
         self.results_path = pathlib.Path(__file__).resolve().parents[1] / "results" / pathlib.Path(__file__).stem / datetime.datetime.now().strftime("%Y-%m-%d--%H-%M-%S")  # Path to store the model weights and TensorBoard logs
         self.save_model = True  # Save the checkpoint in results_path as model.checkpoint
-        self.training_steps = 10  # Total number of training steps (ie weights update according to a batch)
-        self.batch_size = 64  # Number of parts of games to train on at each training step
+        self.training_steps = 10000  # Total number of training steps (ie weights update according to a batch)
+        self.batch_size = 512  # Number of parts of games to train on at each training step
         self.checkpoint_interval = 10  # Number of training steps before using the model for self-playing
         self.value_loss_weight = 0.25  # Scale the value loss to avoid overfitting of the value function, paper recommends 0.25 (See paper appendix Reanalyze)
         self.train_on_gpu = torch.cuda.is_available()  # Train on GPU if available
@@ -125,7 +125,7 @@ class MuZeroConfig:
         Returns:
             Positive float.
         """
-        return 1
+        return 0.5
 
 
 class Game(AbstractGame):
