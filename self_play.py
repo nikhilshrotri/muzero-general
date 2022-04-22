@@ -7,15 +7,15 @@ import torch
 
 import models
 
-import random
-import pickle
-import chess
+# import random
+# import pickle
+# import chess
 
-with open('to_model' , 'rb') as f:
-    to_model = pickle.load(f)
+# with open('to_model' , 'rb') as f:
+#     to_model = pickle.load(f)
 
-with open('from_model' , 'rb') as f:
-    from_model = pickle.load(f)
+# with open('from_model' , 'rb') as f:
+#     from_model = pickle.load(f)
 
 
 @ray.remote
@@ -175,7 +175,7 @@ class SelfPlay:
                         )
                 else:
                     action, root = self.select_opponent_action(
-                        opponent, stacked_observations,observation
+                        opponent, stacked_observations
                     )
 
                 observation, reward, done = self.game.step(action)
@@ -199,7 +199,7 @@ class SelfPlay:
     def close_game(self):
         self.game.close()
 
-    def select_opponent_action(self, opponent, stacked_observations, observation):
+    def select_opponent_action(self, opponent, stacked_observations):
         """
         Select opponent action for evaluating MuZero level.
         """
@@ -227,37 +227,37 @@ class SelfPlay:
                 set(self.config.action_space)
             ), "Legal actions should be a subset of the action space."
 
-            ch = random.choice([0,1])
-            co_ord = ['a1', 'a2', 'a3', 'a4', 'a5', 'a6', 'a7', 'a8', 
-            'b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7', 'b8', 
-            'c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 
-            'd1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'd8', 
-            'e1', 'e2', 'e3', 'e4', 'e5', 'e6', 'e7', 'e8', 
-            'f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7', 'f8', 
-            'g1', 'g2', 'g3', 'g4', 'g5', 'g6', 'g7', 'g8', 
-            'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'h7', 'h8']
-            if ch == 0:
-                observation = observation.reshape(1,7,8,8)
-                move_from_op_predict = from_model.predict(observation)
+#             ch = random.choice([0,1])
+#             co_ord = ['a1', 'a2', 'a3', 'a4', 'a5', 'a6', 'a7', 'a8', 
+#             'b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7', 'b8', 
+#             'c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 
+#             'd1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'd8', 
+#             'e1', 'e2', 'e3', 'e4', 'e5', 'e6', 'e7', 'e8', 
+#             'f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7', 'f8', 
+#             'g1', 'g2', 'g3', 'g4', 'g5', 'g6', 'g7', 'g8', 
+#             'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'h7', 'h8']
+#             if ch == 0:
+#                 observation = observation.reshape(1,7,8,8)
+#                 move_from_op_predict = from_model.predict(observation)
 
-                move_from = co_ord[numpy.argmax(move_from_op_predict)]
+#                 move_from = co_ord[numpy.argmax(move_from_op_predict)]
 
-                move_to_op_predict = to_model.predict(observation)
+#                 move_to_op_predict = to_model.predict(observation)
 
-                move_to = co_ord[numpy.argmax(move_to_op_predict)]
+#                 move_to = co_ord[numpy.argmax(move_to_op_predict)]
 
-                cnn_move = move_from + move_to
+#                 cnn_move = move_from + move_to
 
-                # cnn_uci = chess.Move.from_uci(cnn_move)
+#                 # cnn_uci = chess.Move.from_uci(cnn_move)
 
-                action_dict = self.game.get_action_dict()
+#                 action_dict = self.game.get_action_dict()
 
-                if chess.Move.from_uci(cnn_move) in action_dict.keys():
-                    print('Action chosen from CNN',cnn_move)
-                    return action_dict[chess.Move.from_uci(cnn_move)], None
+#                 if chess.Move.from_uci(cnn_move) in action_dict.keys():
+#                     print('Action chosen from CNN',cnn_move)
+#                     return action_dict[chess.Move.from_uci(cnn_move)], None
                     
-            else:
-                return numpy.random.choice(self.game.legal_actions()), None
+#             else:
+            return numpy.random.choice(self.game.legal_actions()), None
         else:
             raise NotImplementedError(
                 'Wrong argument: "opponent" argument should be "self", "human", "expert" or "random"'
